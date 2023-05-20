@@ -1,7 +1,7 @@
 ---
 layout: layouts/home.njk
-title: Home
-date: 2016-01-01T00:00:00.000Z
+title: VentoRelativo Parapendio Club
+date: 2023-05-20T19:53:07.109Z
 permalink: /
 eleventyNavigation:
   key: Home
