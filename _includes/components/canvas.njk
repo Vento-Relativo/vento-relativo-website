@@ -1,0 +1,42 @@
+<style>
+  header {
+    position: relative;
+  }
+  #animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+  }
+</style>
+
+<div id="animation"></div>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
+  integrity="sha512-334uBDwY0iZ2TklV1OtDtBW9vp7jjP7SWRzT7Ehu1fdtPIjTpCwTSFb8HI/YBau9L1/kRBEOALrS229Kry4yFQ=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+  defer="defer"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.clouds.min.js"
+  integrity="sha512-b69OnXWaP5341Ea0Yk7i2mlNH+OurIW4udbikKpmYneTePmKbiu+S1qxGanqUchivRNC8df5dT4Tty19SElAHw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+  defer="defer"
+  onload="setVanta()"></script>
+<script>
+  var setVanta = () => {
+    if (window.VANTA)
+      window.VANTA.CLOUDS({
+        el: "#animation",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        speed: 0.70
+      })
+  }
+</script>

@@ -6,6 +6,9 @@
 	<body>
 
 		<header>
+			{% if section=="home" %}
+				{% include "components/canvas.njk" %}
+			{% endif %}
 			<em>
 				<a href="{{ '/' | url }}">{{ metadata.title }}</a>
 			</em>
