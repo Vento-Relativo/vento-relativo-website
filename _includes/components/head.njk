@@ -9,8 +9,8 @@
   {% endset %}
   <style>{{ css | cssmin | safe }}</style>
   {# Uncomment below if you want to include minified inline JavaScript #}
-  {# {% set js %}
+  {% set js %}
     {% include "assets/js/inline.js" %}
   {% endset %}
-  <script>{{ js | jsmin | safe }}</script> #}
+  <script>{{ js | jsmin | safe }}</script>
 </head>
