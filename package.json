@@ -30,7 +30,6 @@
     "html-minifier": "^4.0.0",
     "luxon": "^3.2.1",
     "markdown-it-anchor": "^8.6.6",
-    "markdown-it-github-headings": "^2.0.1",
     "postcss": "^8.4.23",
     "postcss-nesting": "^11.2.2",
     "uglify-js": "^3.17.4"
