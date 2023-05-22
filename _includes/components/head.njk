@@ -9,7 +9,7 @@
   {% set css %}
     {% include "assets/css/inline.css" %}
   {% endset %}
-  <style>{{ css | cssmin | safe }}</style>
+  <style>{{ css | postcss | cssmin | safe }}</style>
   {# Uncomment below if you want to include minified inline JavaScript #}
   {% set js %}
     {% include "assets/js/inline.js" %}

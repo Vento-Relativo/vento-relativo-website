@@ -3,6 +3,22 @@ const CleanCSS = require("clean-css");
 const UglifyJS = require("uglify-js");
 const htmlmin = require("html-minifier");
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
+const postCss = require('postcss');
+const postcssNesting = require('postcss-nesting');
+const autoprefixer = require('autoprefixer');
+
+const postcssFilter = (cssCode, done) => {
+	// we call PostCSS here.
+	postCss([postcssNesting(), autoprefixer()])
+		.process(cssCode, {
+			// path to our CSS file
+			from: '_includes/assets/css/inline.css'
+		})
+		.then(
+			(r) => done(null, r.css),
+			(e) => done(e, null)
+		);
+};
 
 module.exports = function(eleventyConfig) {
 
@@ -46,6 +62,9 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addFilter("machineDate", dateObj => {
     return DateTime.fromJSDate(dateObj).toFormat("yyyy-MM-dd");
   });
+
+  // eleventyConfig.addWatchTarget('./src/_includes/styles/tailwind.css');
+	eleventyConfig.addNunjucksAsyncFilter("postcss", postcssFilter);
 
   // Minify CSS
   eleventyConfig.addFilter("cssmin", function(code) {
