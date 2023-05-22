@@ -86,8 +86,9 @@ module.exports = function(eleventyConfig) {
   let markdownIt = require("markdown-it");
   let markdownItAnchor = require("markdown-it-anchor");
   let options = {
-    breaks: true,
-    linkify: true
+    html: true,  // Enable HTML tags in source
+    breaks: true, // Convert line breaks into <br>
+    linkify: true // Autoconvert URLs to links
   };
   let opts = {
     permalink: false
