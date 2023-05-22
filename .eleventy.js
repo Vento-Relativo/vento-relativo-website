@@ -104,6 +104,7 @@ module.exports = function(eleventyConfig) {
   /* Markdown Plugins */
   let markdownIt = require("markdown-it");
   let markdownItAnchor = require("markdown-it-anchor");
+  let markdownItGHeadings = require("markdown-it-github-headings");
   let options = {
     html: true,  // Enable HTML tags in source
     breaks: true, // Convert line breaks into <br>
@@ -115,6 +116,7 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.setLibrary("md", markdownIt(options)
     .use(markdownItAnchor, opts)
+    .use(markdownItGHeadings)
   );
 
   return {
