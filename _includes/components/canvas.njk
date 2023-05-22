@@ -1,4 +1,5 @@
 <style>
+  {% set css %}
   header {
     position: relative;
   }
@@ -13,9 +14,9 @@
   #logo {
     mix-blend-mode: multiply;
   }
+  {% endset %}
+  {{css | cssmin | safe}}
 </style>
-
-<div id="animation"></div>
 
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
@@ -31,6 +32,7 @@
   defer="defer"
   onload="setVanta()"></script>
 <script>
+  {% set js %}
   var setVanta = () => {
     if (window.VANTA)
       window.VANTA.CLOUDS({
@@ -43,4 +45,8 @@
         speed: 0.70
       })
   }
+  {% endset %}
+  {{ js | jsmin | safe }}
 </script>
+
+<div id="animation"></div>
