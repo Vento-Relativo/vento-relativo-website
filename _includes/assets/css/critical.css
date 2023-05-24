@@ -1,6 +1,6 @@
 :root {
   --primary: #1d59af;
-  --secondary: #fbbf15;
+  --secondary: #e9e9e9;
   --background: #fff;
   --font-stack-base: 'Avenir', 'Avenir Next', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Helvetica, Arial, sans-serif;
@@ -205,8 +205,8 @@ textarea {
   }
 }
 
-/* HOME */
 [data-current='home'] h1,
+.visually-hidden,
 .sr-only {
   clip: rect(1px, 1px, 1px, 1px) !important;
   border: 0 !important;

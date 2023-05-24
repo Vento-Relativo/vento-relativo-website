@@ -137,7 +137,10 @@ module.exports = function (eleventyConfig) {
   };
   let opts = {
     permalink: true,
-    permalinkSymbol: '<svg aria-hidden="true" height="16" width="16"><use xlink:href="#icon-link"></use></svg>'
+    permalinkSymbol: `
+      <span class="visually-hidden">Jump to heading</span>
+      <svg aria-hidden="true" height="16" width="16"><use xlink:href="#icon-link"></use></svg>
+    `
   };
 
   eleventyConfig.setLibrary("md", markdownIt(options)
