@@ -15,7 +15,4 @@ Includes [Netlify CMS](https://www.netlifycms.org) for WYSIWYG content editing, 
 
 [Log in to the Netlify CMS dashboard](/admin/)
 
-
-<div class="some divs">div here</div>
-
 <a class="button" href="https://www.google.com">Button</a>
