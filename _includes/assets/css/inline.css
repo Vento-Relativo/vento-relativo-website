@@ -37,7 +37,7 @@ code {
 }
 
 a[href] {
-  & &:visited {
+  &, &:visited {
     color: var(--primary);
   }
 
@@ -70,8 +70,8 @@ main {
   padding-bottom: 2em;
   margin-inline: auto;
 
-  & :first-child,
-  & > article :first-child {
+  :first-child,
+  > article :first-child {
     margin-top: 0;
   }
 }
@@ -93,7 +93,7 @@ pre {
 
 header {
   /* Header Logo (style as h2) */
-  & > em {
+  > em {
     display: block;
     font-size: 2em;
     margin: 0.67em 0;
@@ -108,10 +108,6 @@ header {
       list-style: none;
       display: flex;
       justify-content: center;
-
-      & :first-child {
-        margin-left: 0;
-      }
     }
 
     & li {

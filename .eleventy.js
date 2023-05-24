@@ -82,7 +82,7 @@ module.exports = function (eleventyConfig) {
   // PostCSS => https://github.com/11ty/eleventy/issues/518#issuecomment-489033990
   eleventyConfig.addNunjucksAsyncFilter("postcss", function (cssCode, callback) {
     postcss([
-      postcssNesting,
+      // postcssNesting,
       autoprefixer,
       cssnano
     ])
