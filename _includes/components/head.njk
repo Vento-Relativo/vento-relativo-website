@@ -7,7 +7,7 @@
   <meta name="description" content="{{ metaDescription or eleventyComputed.metaDescription or metadata.description }}">
 
   {% css %}
-    {% include "assets/css/inline.css" %}
+    {% include "assets/css/critical.css" %}
   {% endcss %}
   <!-- Inlined critical styles -->
 	<style>{% getBundle "css" %}</style>
@@ -18,6 +18,9 @@
 		<link rel="stylesheet" href="{% getBundleFileUrl 'css', 'defer' %}">
 	</noscript>
 
+  {% js %}
+    {% include "assets/js/inline.js" %}
+  {% endjs %}
   <!-- Inlined js bundle -->
 	<script>{% getBundle "js" %}</script>
 
