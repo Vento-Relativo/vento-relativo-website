@@ -235,3 +235,12 @@ a.button {
     opacity: 0.8;
   }
 }
+
+/* Anchors link */
+.header-anchor > svg {
+  visibility: hidden;
+}
+
+:is(h2, h3, h4, h5, h6):hover .header-anchor > svg {
+  visibility: visible;
+}
