@@ -1,18 +1,24 @@
 <head>
   <meta charset="utf-8">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com/" crossorigin />
-  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/" />
   <meta name="generator" content="{{ eleventy.generator }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% getBundle "html", "head" %}
   <title>{{ title or metadata.title }}</title>
   <meta name="description" content="{{ metaDescription or eleventyComputed.metaDescription or metadata.description }}">
-  {% set css %}
+
+  {% css %}
     {% include "assets/css/inline.css" %}
-  {% endset %}
-  <style>{{ css | postcss | cssmin | safe }}</style>
-  {# Uncomment below if you want to include minified inline JavaScript #}
-  {% set js %}
-    {% include "assets/js/inline.js" %}
-  {% endset %}
-  <script>{{ js | jsmin | safe }}</script>
+  {% endcss %}
+  <!-- Inlined critical styles -->
+	<style>{% getBundle "css" %}</style>
+
+	<!-- Deferred non-critical styles -->
+	<link rel="stylesheet" href="{% getBundleFileUrl 'css', 'defer' %}" media="print" onload="this.media='all'">
+	<noscript>
+		<link rel="stylesheet" href="{% getBundleFileUrl 'css', 'defer' %}">
+	</noscript>
+
+  <!-- Inlined js bundle -->
+	<script>{% getBundle "js" %}</script>
+
 </head>

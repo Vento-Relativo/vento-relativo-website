@@ -1,8 +1,10 @@
-<style>
-  {% set css %}
+<div id="animation"></div>
+
+<style>{% css "defer" %}
   header {
     position: relative;
   }
+
   #animation {
     position: absolute;
     top: 0;
@@ -11,13 +13,18 @@
     right: 0;
     z-index: -1;
   }
+
   #logo {
     mix-blend-mode: multiply;
   }
-  {% endset %}
-  {{ css | cssmin | safe}}
-</style>
+{% endcss %}</style>
 
+{% html "head" %}
+<link rel="preconnect" href="https://cdnjs.cloudflare.com/" crossorigin />
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/" />
+{% endhtml %}
+
+{% html "footer" %}
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"
   integrity="sha512-334uBDwY0iZ2TklV1OtDtBW9vp7jjP7SWRzT7Ehu1fdtPIjTpCwTSFb8HI/YBau9L1/kRBEOALrS229Kry4yFQ=="
@@ -31,22 +38,18 @@
   referrerpolicy="no-referrer"
   defer="defer"
   onload="setVanta()"></script>
-<script>
-  {% set js %}
-  var setVanta = () => {
-    if (window.VANTA)
-      window.VANTA.CLOUDS({
-        el: "#animation",
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        speed: 0.70
-      })
-  }
-  {% endset %}
-  {{ js | jsmin | safe }}
-</script>
+{% endhtml %}
 
-<div id="animation"></div>
+<script>{% js %}
+var setVanta = () => {
+  if (window.VANTA) window.VANTA.CLOUDS({
+    el: "#animation",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    speed: 0.70
+  })
+}
+{% endjs %}</script>

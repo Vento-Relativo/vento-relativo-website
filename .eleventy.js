@@ -3,14 +3,43 @@ const CleanCSS = require("clean-css");
 const UglifyJS = require("uglify-js");
 const htmlmin = require("html-minifier");
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
+const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
 const postcss = require('postcss');
 const postcssNesting = require('postcss-nesting');
 const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano')
 
-module.exports = function(eleventyConfig) {
+module.exports = function (eleventyConfig) {
 
   // Eleventy Navigation https://www.11ty.dev/docs/plugins/navigation/
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
+
+  eleventyConfig.addPlugin(bundlerPlugin, {
+    transforms: [
+      async function (code) {
+        // this.type returns the bundle name.
+        if (this.type === 'css') {
+          // Same as Eleventy transforms, this.page is available here.
+          let result = await postcss([
+            // postcssNesting,
+            autoprefixer,
+            cssnano
+          ]).process(code, { from: this.page.inputPath, to: null });
+          return result.css;
+        }
+        if (this.type === 'js') {
+          let minified = UglifyJS.minify(code);
+          if (minified.error) {
+            console.log("UglifyJS error: ", minified.error);
+            return code;
+          }
+          return minified.code;
+        }
+
+        return code;
+      }
+    ]
+  });
 
   // Configuration API: use eleventyConfig.addLayoutAlias(from, to) to add
   // layout aliases! Say you have a bunch of existing content using
@@ -33,9 +62,9 @@ module.exports = function(eleventyConfig) {
         return coll;
       }
       if (!coll.hasOwnProperty(author)) {
-        coll[author] = [];
+        coll[ author ] = [];
       }
-      coll[author].push(post.data);
+      coll[ author ].push(post.data);
       return coll;
     }, {});
   });
@@ -51,10 +80,11 @@ module.exports = function(eleventyConfig) {
   });
 
   // PostCSS => https://github.com/11ty/eleventy/issues/518#issuecomment-489033990
-  eleventyConfig.addNunjucksAsyncFilter("postcss", function(cssCode, callback) {
+  eleventyConfig.addNunjucksAsyncFilter("postcss", function (cssCode, callback) {
     postcss([
       postcssNesting,
       autoprefixer,
+      cssnano
     ])
       .process(cssCode)
       .then(function (result) {
@@ -63,12 +93,12 @@ module.exports = function(eleventyConfig) {
   });
 
   // Minify CSS
-  eleventyConfig.addFilter("cssmin", function(code) {
+  eleventyConfig.addFilter("cssmin", function (code) {
     return new CleanCSS({}).minify(code).styles;
   });
 
   // Minify JS
-  eleventyConfig.addFilter("jsmin", function(code) {
+  eleventyConfig.addFilter("jsmin", function (code) {
     let minified = UglifyJS.minify(code);
     if (minified.error) {
       console.log("UglifyJS error: ", minified.error);
@@ -78,7 +108,7 @@ module.exports = function(eleventyConfig) {
   });
 
   // Minify HTML output
-  eleventyConfig.addTransform("htmlmin", function(content, outputPath) {
+  eleventyConfig.addTransform("htmlmin", function (content, outputPath) {
     if (outputPath.indexOf(".html") > -1) {
       let minified = htmlmin.minify(content, {
         useShortDoctype: true,
@@ -100,7 +130,6 @@ module.exports = function(eleventyConfig) {
   /* Markdown Plugins */
   let markdownIt = require("markdown-it");
   let markdownItAnchor = require("markdown-it-anchor");
-  // let markdownItGHeadings = require("markdown-it-github-headings");
   let options = {
     html: true,  // Enable HTML tags in source
     breaks: true, // Convert line breaks into <br>
@@ -108,7 +137,7 @@ module.exports = function(eleventyConfig) {
   };
   let opts = {
     permalink: true,
-    permalinkSymbol: '<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>'
+    permalinkSymbol: '<svg aria-hidden="true" height="16" width="16"><use xlink:href="#icon-link"></use></svg>'
   };
 
   eleventyConfig.setLibrary("md", markdownIt(options)
@@ -117,7 +146,7 @@ module.exports = function(eleventyConfig) {
   );
 
   return {
-    templateFormats: ["md", "njk", "liquid"],
+    templateFormats: [ "md", "njk", "liquid" ],
 
     // If your site lives in a different subdirectory, change this.
     // Leading or trailing slashes are all normalized away, so don’t worry about it.
