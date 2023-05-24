@@ -186,7 +186,7 @@ form {
 
 input,
 textarea,
-button {
+form button {
   width: 100%;
   padding: 1em;
   margin-bottom: 1em;
@@ -219,8 +219,7 @@ textarea {
   width: 1px !important;
 }
 
-button,
-a.button {
+.button {
   color: var(--background) !important;
   background: var(--primary);
   padding: 0.3em 0.6em;

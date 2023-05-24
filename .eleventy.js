@@ -107,6 +107,16 @@ module.exports = function (eleventyConfig) {
     return minified.code;
   });
 
+  // Array/Object to inline JS https://www.aleksandrhovhannisyan.com/blog/useful-11ty-filters/#2-working-with-json
+  eleventyConfig.addFilter('fromJson', JSON.parse);
+  eleventyConfig.addFilter('toJson', JSON.stringify);
+
+  // Custom function writing an array of coordinates with fixed format
+  eleventyConfig.addFilter('adjustCoordinates', (coordArray) => {
+    return JSON.stringify(coordArray.map((to) => to.split(' ').join('') // remove spaces
+      .split(',').reverse())) // flip the coordinates
+  });
+
   // Minify HTML output
   eleventyConfig.addTransform("htmlmin", function (content, outputPath) {
     if (outputPath.indexOf(".html") > -1) {
@@ -136,11 +146,13 @@ module.exports = function (eleventyConfig) {
     linkify: true // Autoconvert URLs to links
   };
   let opts = {
-    permalink: true,
-    permalinkSymbol: `
-      <span class="visually-hidden">Jump to heading</span>
-      <svg aria-hidden="true" height="16" width="16"><use xlink:href="#icon-link"></use></svg>
-    `
+    // permalink: true,
+    permalink: markdownItAnchor.permalink.linkInsideHeader({
+      symbol: `
+        <span class="visually-hidden">Jump to heading</span>
+        <svg aria-hidden="true" height="16" width="16"><use xlink:href="#icon-link"></use></svg>
+      `,
+    })
   };
 
   eleventyConfig.setLibrary("md", markdownIt(options)

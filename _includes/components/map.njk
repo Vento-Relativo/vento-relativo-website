@@ -1,0 +1,99 @@
+{% html "head" %}
+<link rel="preconnect" href="https://cdn.maptiler.com/" crossorigin />
+<link rel="dns-prefetch" href="https://cdn.maptiler.com/" />
+
+<link href="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.css" rel="stylesheet" media="print" onload="this.media='all'" />
+<noscript>
+  <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.css">
+</noscript>
+
+<script src="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.umd.min.js" defer onload="drawMap()"></script>
+{% endhtml %}
+
+<style>
+{% css %}
+  #map-site {
+    width: 100%;
+    height: 25rem;
+    border-radius: 0.5rem;
+    background-color: var(--secondary);
+    position: relative;
+  }
+  #map-style-switcher {
+    position: absolute;
+    top: 205px;
+    right: 10px;
+    z-index: 1;
+  }
+  .maplibregl-ctrl-icon {
+    .maplibregl-ctrl-outdoor {}
+    .maplibregl-ctrl-topo {}
+    .maplibregl-ctrl-satellite {}
+  }
+  .maplibregl-ctrl-bottom-left {
+    display: none !important;
+  }
+{% endcss %}
+</style>
+
+<div id="map-site">
+  <div id="map-style-switcher" class="maplibregl-ctrl maplibregl-ctrl-group">
+    <button id="style-outdoor" class="maplibregl-ctrl-icon maplibregl-ctrl-outdoor" title="Outdoor"></button>
+    <button id="style-topo" class="maplibregl-ctrl-icon maplibregl-ctrl-topo" title="Topo"></button>
+    <button id="style-hybrid" class="maplibregl-ctrl-icon maplibregl-ctrl-satellite" title="Satellite"></button>
+  </div>
+</div>
+
+<script>
+  var drawMap = () => {
+    // Parse the takeoffs from the json string and adjust the data
+    const takeoffs = {{ takeoffs | adjustCoordinates | safe }}
+    const landings = {{ landings | adjustCoordinates | safe }}
+
+    maptilersdk.config.apiKey = 'Rbbu3nsbqSZW7WjHyQEk';
+    const map = new maptilersdk.Map({
+      container: 'map-site', // container's id or the HTML element to render the map
+      style: "outdoor",
+      // style: 'bad49809-c61a-41fe-a212-9b1f58c1a8f8', // "topo" "topo-v2"
+      center: takeoffs[0], // starting position [lng, lat]
+      zoom: 13, // starting zoom
+      // maxZoom: 14,
+      minZoom: 9,
+      geolocateControl: false, //disable the geolocate control
+      fullscreenControl: true,
+      scaleControl: true,
+      terrain: true,
+      terrainControl: true,
+      pitch: 35,
+      maxPitch: 70,
+    });
+
+    const bounds = new maptilersdk.LngLatBounds();
+
+    takeoffs.forEach(coord => {
+      // Add the marker
+      new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(coord).addTo(map);
+      // Extend the bound to the current marker
+      bounds.extend(coord);
+    });
+    landings.forEach(coorl => {
+      new maptilersdk.Marker({ color: 'tomato' }).setLngLat(coorl).addTo(map);
+      bounds.extend(coorl);
+    });
+    // Set the center of the map to the center of the bounds
+    map.setCenter(bounds.getCenter());
+    // Fit the map to the bounding box
+    map.fitBounds(bounds, { padding: 30 });
+
+    // Add the style switcher listener
+    document.getElementById('style-outdoor').addEventListener('click', function() {
+      map.setStyle('https://api.maptiler.com/maps/outdoor/style.json?key=' + maptilersdk.config.apiKey);
+    });
+    document.getElementById('style-topo').addEventListener('click', function() {
+      map.setStyle('https://api.maptiler.com/maps/topo/style.json?key=' + maptilersdk.config.apiKey);
+    });
+    document.getElementById('style-hybrid').addEventListener('click', function() {
+      map.setStyle('https://api.maptiler.com/maps/hybrid/style.json?key=' + maptilersdk.config.apiKey);
+    });
+  }
+</script>

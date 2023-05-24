@@ -1,0 +1,30 @@
+<section>
+	{% for site in siteslist | reverse %}
+		<article{% if site.url == url %} data-current="current item"{% endif %}>
+			<h3>
+				<a href="{{ site.url | url }}">
+					{% if site.data.title %}
+						{{ site.data.title }}
+					{% else %}
+						Sito
+					{% endif %}
+				</a>
+			</h3>
+			{% if site.data.summary %}
+				<p>
+					{{ site.data.summary }}
+				</p>
+			{% endif %}
+			{% if site.data.tags %}
+				<p>
+					{% for tag in site.data.tags %}
+		  			{%- if tag != "sito" -%}
+		  				{% set tagUrl %}/tags/{{ tag }}/{% endset %}
+		  			<a href="{{ tagUrl | url }}" rel="tag">{{ tag }}</a>
+		  			{%- endif -%}
+					{% endfor %}
+				</p>
+			{% endif %}
+		</article>
+	{% endfor %}
+</section>

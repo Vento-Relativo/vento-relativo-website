@@ -1,0 +1,11 @@
+---
+layout: layouts/base.njk
+section: siti
+permalink: /siti/index.html
+---
+<h1>{{ title }}</h1>
+
+{{ layoutContent | safe }}
+
+{% set siteslist = collections.sito %}
+{% include "components/siteslist.njk" %}

@@ -1,0 +1,35 @@
+---
+layout: layouts/base.njk
+section: sito
+---
+
+<article>
+  <h1>{{ title }}</h1>
+
+  {% if tags %}
+    <p>
+    {% for tag in tags %}
+      {%- if tag != "sito" -%}
+        {% set tagUrl %}/tags/{{ tag }}/{% endset %}
+        <a href="{{ tagUrl | url }}" rel="tag">{{ tag }}</a>
+      {%- endif -%}
+    {% endfor %}
+    </p>
+  {% endif %}
+
+  <p>
+    <small>
+      Dati aggiornati al <time datetime="{{ page.date | machineDate }}">{{ page.date | readableDate }}</time>
+    </small>
+  </p>
+
+  {% include "components/map.njk" %}
+
+  {{ layoutContent | safe }}
+
+
+</article>
+
+<nav>
+  <a href="{{ '/siti/' | url }}">← Elenco siti</a>
+</nav>

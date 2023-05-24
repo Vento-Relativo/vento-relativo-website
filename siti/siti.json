@@ -1,0 +1,8 @@
+{
+  "layout": "layouts/sito.njk",
+  "permalink": "siti/{{ title | slug }}/index.html",
+  "author": "Anonymous",
+  "tags": [
+    "sito"
+  ]
+}
