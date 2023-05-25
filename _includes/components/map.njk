@@ -85,8 +85,6 @@
       new maptilersdk.Marker({ color: 'tomato' }).setLngLat(lan).addTo(map);
       bounds.extend(lan);
     });
-    map.setCenter(bounds.getCenter());
-    map.fitBounds(bounds, { padding: 30 });
 
     map.on('load', () => {
       // Add the style switcher listener
@@ -98,12 +96,12 @@
           map.setStyle('https://api.maptiler.com/maps/' + style + '/style.json?key=' + maptilersdk.config.apiKey);
         });
       });
-      mapSwitcher.removeAttribute('hidden');
       // Settimeout to fix the maptiler bug
       setTimeout(() => {
+        map.fitBounds(bounds, { padding: 40 });
+        mapSwitcher.removeAttribute('hidden');
         //map.resize();
-        map.triggerRepaint();
-      }, 1000);
+      }, 100);
     });
   }
   {% endjs %}
