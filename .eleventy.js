@@ -21,7 +21,7 @@ module.exports = function (eleventyConfig) {
         if (this.type === 'css') {
           // Same as Eleventy transforms, this.page is available here.
           let result = await postcss([
-            // postcssNesting,
+            postcssNesting,
             autoprefixer,
             cssnano
           ]).process(code, { from: this.page.inputPath, to: null });
@@ -82,7 +82,7 @@ module.exports = function (eleventyConfig) {
   // PostCSS => https://github.com/11ty/eleventy/issues/518#issuecomment-489033990
   eleventyConfig.addNunjucksAsyncFilter("postcss", function (cssCode, callback) {
     postcss([
-      // postcssNesting,
+      postcssNesting,
       autoprefixer,
       cssnano
     ])
