@@ -79,13 +79,21 @@
 
     // Add the markers while setting the bounds
     const bounds = new maptilersdk.LngLatBounds();
-    takeoffs.map(to => {
-      new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(to).addTo(map);
+    takeoffs.map((to, i) => {
+      let marker = new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(to).addTo(map);
       bounds.extend(to);
+      let num = i > 0 ? i+1 : '';
+      let popup = new maptilersdk.Popup({ closeButton: true })
+        .setHTML(`<h3>Decollo ${num}</h3><p><a href="https://maps.google.com/maps?q=${to[1]},${to[0]}" target="_blank">Naviga qui</a></p>`);
+      marker.setPopup(popup);
     });
-    landings.map(lan => {
-      new maptilersdk.Marker({ color: 'tomato' }).setLngLat(lan).addTo(map);
+    landings.map((lan, i) => {
+      let marker = new maptilersdk.Marker({ color: 'tomato' }).setLngLat(lan).addTo(map);
       bounds.extend(lan);
+      let num = i > 0 ? i+1 : '';
+      let popup = new maptilersdk.Popup({ closeButton: true })
+        .setHTML(`<h3>Atterraggio ${num}</h3><p><a href="https://maps.google.com/maps?q=${lan[1]},${lan[0]}" target="_blank">Naviga qui</a></p>`);
+      marker.setPopup(popup);
     });
 
     map.on('load', () => {
