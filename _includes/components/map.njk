@@ -79,20 +79,27 @@
 
     // Add the markers while setting the bounds
     const bounds = new maptilersdk.LngLatBounds();
-    takeoffs.map((to, i) => {
-      let marker = new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(to).addTo(map);
-      bounds.extend(to);
-      let num = i > 0 ? i+1 : '';
-      let popup = new maptilersdk.Popup({ closeButton: true })
-        .setHTML(`<h3>Decollo ${num}</h3><p><a href="https://maps.google.com/maps?q=${to[1]},${to[0]}" target="_blank">Naviga qui</a></p>`);
-      marker.setPopup(popup);
-    });
-    landings.map((lan, i) => {
-      let marker = new maptilersdk.Marker({ color: 'tomato' }).setLngLat(lan).addTo(map);
-      bounds.extend(lan);
-      let num = i > 0 ? i+1 : '';
-      let popup = new maptilersdk.Popup({ closeButton: true })
-        .setHTML(`<h3>Atterraggio ${num}</h3><p><a href="https://maps.google.com/maps?q=${lan[1]},${lan[0]}" target="_blank">Naviga qui</a></p>`);
+    let takeoffCounter = landingCounter = 0;
+
+    [...takeoffs, ...landings].map((location, i) => {
+      const isTakeoff = i < takeoffs.length;
+      const markerColor = isTakeoff ? 'var(--blue)' : 'var(--green)';
+      const markerType = isTakeoff ? '🪂 Decollo' : '🎯 Atterraggio';
+      let num = '';
+
+      if (isTakeoff) {
+        takeoffCounter++;
+        num = takeoffCounter > 1 ? takeoffCounter : '';
+      } else {
+        landingCounter++;
+        num = landingCounter > 1 ? landingCounter : '';
+      }
+
+      const marker = new maptilersdk.Marker({ color: markerColor }).setLngLat(location).addTo(map);
+      bounds.extend(location);
+
+      const popup = new maptilersdk.Popup({ closeButton: true })
+        .setHTML(`<h3>${markerType} ${num}</h3><p><a href="https://maps.google.com/maps?q=${location[1]},${location[0]}" target="_blank">Naviga qui</a></p>`);
       marker.setPopup(popup);
     });
 
