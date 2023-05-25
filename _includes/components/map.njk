@@ -17,27 +17,27 @@
     height: 25rem;
     border-radius: 0.5rem;
     background-color: var(--secondary);
-    position: relative;
+    {# position: relative; #}
   }
   #map-style-switcher {
-    position: absolute;
+    {# position: absolute;
     top: 205px;
     right: 10px;
-    z-index: 1;
+    z-index: 1; #}
   }
   .maplibregl-ctrl-icon {
     .maplibregl-ctrl-outdoor {}
     .maplibregl-ctrl-topo {}
     .maplibregl-ctrl-satellite {}
   }
-  .maplibregl-ctrl-bottom-left {
+  .maplibregl-ctrl-bottom-left a[aria-label="Mapbox logo"] {
     display: none !important;
   }
 {% endcss %}
 </style>
 
 <div id="map-site">
-  <div id="map-style-switcher" class="maplibregl-ctrl maplibregl-ctrl-group">
+  <div id="map-style-switcher" class="maplibregl-ctrl maplibregl-ctrl-group" hidden>
     <button id="style-outdoor" class="maplibregl-ctrl-icon maplibregl-ctrl-outdoor" title="Outdoor"></button>
     <button id="style-topo" class="maplibregl-ctrl-icon maplibregl-ctrl-topo" title="Topo"></button>
     <button id="style-hybrid" class="maplibregl-ctrl-icon maplibregl-ctrl-satellite" title="Satellite"></button>
@@ -60,6 +60,7 @@
       // maxZoom: 14,
       minZoom: 9,
       geolocateControl: false, //disable the geolocate control
+      attributionControl: false,
       fullscreenControl: true,
       scaleControl: true,
       terrain: true,
@@ -67,33 +68,41 @@
       pitch: 35,
       maxPitch: 70,
     });
+    {#
+      // FIXME: move attribution control to bottom left
+      // https://github.com/maptiler/maplibre-gl-js-samples/blob/main/control-minimap/code.html
+      map.addControl(new maptilersdk.AttributionControl({ compact: true}), 'bottom-left');
+    #}
 
+    // Add the markers while setting the bounds
     const bounds = new maptilersdk.LngLatBounds();
-
-    takeoffs.forEach(coord => {
-      // Add the marker
-      new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(coord).addTo(map);
-      // Extend the bound to the current marker
-      bounds.extend(coord);
+    takeoffs.map(to => {
+      new maptilersdk.Marker({ color: 'dodgerblue' }).setLngLat(to).addTo(map);
+      bounds.extend(to);
     });
-    landings.forEach(coorl => {
-      new maptilersdk.Marker({ color: 'tomato' }).setLngLat(coorl).addTo(map);
-      bounds.extend(coorl);
+    landings.map(lan => {
+      new maptilersdk.Marker({ color: 'tomato' }).setLngLat(lan).addTo(map);
+      bounds.extend(lan);
     });
-    // Set the center of the map to the center of the bounds
     map.setCenter(bounds.getCenter());
-    // Fit the map to the bounding box
     map.fitBounds(bounds, { padding: 30 });
 
-    // Add the style switcher listener
-    document.getElementById('style-outdoor').addEventListener('click', function() {
-      map.setStyle('https://api.maptiler.com/maps/outdoor/style.json?key=' + maptilersdk.config.apiKey);
-    });
-    document.getElementById('style-topo').addEventListener('click', function() {
-      map.setStyle('https://api.maptiler.com/maps/topo/style.json?key=' + maptilersdk.config.apiKey);
-    });
-    document.getElementById('style-hybrid').addEventListener('click', function() {
-      map.setStyle('https://api.maptiler.com/maps/hybrid/style.json?key=' + maptilersdk.config.apiKey);
+    map.on('load', () => {
+      // Add the style switcher listener
+      let mapSwitcher = document.getElementById('map-style-switcher');
+      document.getElementsByClassName('maplibregl-ctrl-top-left')[0].appendChild(mapSwitcher);
+      let styles = ['outdoor', 'topo', 'hybrid'];
+      styles.map(style => {
+        document.getElementById('style-' + style).addEventListener('click', function() {
+          map.setStyle('https://api.maptiler.com/maps/' + style + '/style.json?key=' + maptilersdk.config.apiKey);
+        });
+      });
+      mapSwitcher.removeAttribute('hidden');
+      // Settimeout to fix the maptiler bug
+      setTimeout(() => {
+        //map.resize();
+        map.triggerRepaint();
+      }, 1000);
     });
   }
 </script>
