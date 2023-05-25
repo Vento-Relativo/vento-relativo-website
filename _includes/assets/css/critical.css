@@ -1,6 +1,6 @@
 :root {
-  --primary: #1d59af;
-  --secondary: #e9e9e9;
+  --primary: #004b78;
+  --secondary: #e2e8f0;
   --background: #fff;
   --font-stack-base: 'Avenir', 'Avenir Next', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Helvetica, Arial, sans-serif;
@@ -37,7 +37,8 @@ code {
 }
 
 a[href] {
-  &, &:visited {
+  &,
+  &:visited {
     color: var(--primary);
   }
 
@@ -123,7 +124,7 @@ header {
         }
 
         &[data-current='current item'] {
-          background-color: white;
+          background-color: var(--secondary);
         }
       }
     }
@@ -220,8 +221,8 @@ textarea {
 }
 
 .button {
-  color: var(--background) !important;
-  background: var(--primary);
+  color: var(--primary);
+  background-color: var(--secondary);
   padding: 0.3em 0.6em;
   border: none;
   border-radius: 0.25em;
@@ -231,7 +232,9 @@ textarea {
   text-transform: uppercase;
 
   &:hover {
-    opacity: 0.8;
+    color: var(--secondary) !important;
+    background-color: var(--primary);
+    /* opacity: 0.8; */
   }
 }
 
