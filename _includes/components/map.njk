@@ -45,6 +45,7 @@
 </div>
 
 <script>
+  {% js %}
   var drawMap = () => {
     // Parse the takeoffs from the json string and adjust the data
     const takeoffs = {{ takeoffs | adjustCoordinates | safe }}
@@ -105,4 +106,5 @@
       }, 1000);
     });
   }
+  {% endjs %}
 </script>
