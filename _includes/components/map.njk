@@ -27,9 +27,21 @@
     z-index: 1; #}
   }
   .maplibregl-ctrl-icon {
-    .maplibregl-ctrl-outdoor {}
-    .maplibregl-ctrl-topo {}
-    .maplibregl-ctrl-satellite {}
+    background-size: 60%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    filter: invert(33%) sepia(480%) saturate(0%) hue-rotate(182deg) brightness(89%) contrast(85%);
+
+    &.maplibregl-ctrl-outdoor {
+      background-image: url("/static/icon/ic_live_srtm@3x.png");
+    }
+    &.maplibregl-ctrl-topo {
+      background-image: url("/static/icon/map_action_trekking_dark@3x.png");
+      background-size: 80%;
+    }
+    &.maplibregl-ctrl-satellite {
+      background-image: url("/static/icon/map_world_globe_dark@3x.png");
+    }
   }
   .maplibregl-ctrl-bottom-left a[aria-label="Mapbox logo"] {
     display: none !important;
@@ -47,6 +59,7 @@
 
 <script>
   {% js %}
+  const isTouchDevice = () => (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
   var drawMap = () => {
     // Parse the takeoffs from the json string and adjust the data
     const takeoffs = {{ takeoffs | adjustCoordinates | safe }}
@@ -64,15 +77,16 @@
       geolocateControl: false, //disable the geolocate control
       attributionControl: false,
       fullscreenControl: true,
-      scaleControl: true,
+      scaleControl: "bottom-left",
       terrain: true,
       terrainControl: true,
       pitch: 35,
       maxPitch: 70,
-      cooperativeGestures: true,
+      scrollZoom: false,
+      cooperativeGestures: isTouchDevice(),
     });
-    {#
-      // FIXME: move attribution control to bottom left
+
+    {#// FIXME: move attribution control to bottom left
       // https://github.com/maptiler/maplibre-gl-js-samples/blob/main/control-minimap/code.html
       map.addControl(new maptilersdk.AttributionControl({ compact: true}), 'bottom-left');
     #}
@@ -104,8 +118,8 @@
     });
 
     map.on('load', () => {
-      // Add the style switcher listener
       let mapSwitcher = document.getElementById('map-style-switcher');
+      // Add the style switcher listener
       document.getElementsByClassName('maplibregl-ctrl-top-left')[0].appendChild(mapSwitcher);
       let styles = ['outdoor', 'topo', 'hybrid'];
       styles.map(style => {
@@ -117,7 +131,6 @@
       setTimeout(() => {
         map.fitBounds(bounds, { padding: 40 });
         mapSwitcher.removeAttribute('hidden');
-        //map.resize();
       }, 100);
     });
   }

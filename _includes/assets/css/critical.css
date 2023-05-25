@@ -2,6 +2,12 @@
   --primary: #004b78;
   --secondary: #e2e8f0;
   --background: #fff;
+  /* palette */
+  --red: tomato;
+  --orange: #FF7F50;
+  --green: #3CB371;
+  --blue: dodgerblue;
+
   --font-stack-base: 'Avenir', 'Avenir Next', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Helvetica, Arial, sans-serif;
 }
@@ -27,7 +33,8 @@ body {
 }
 
 main {
-  max-width: 37.5em;
+  /* was 37.5em; */
+  max-width: 60rem;
 }
 
 p,
