@@ -1,12 +1,12 @@
 {% html "head" %}
 <link rel="preconnect" href="https://cdn.maptiler.com/" crossorigin />
 <link rel="dns-prefetch" href="https://cdn.maptiler.com/" />
-
 <link href="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.css" rel="stylesheet" media="print" onload="this.media='all'" />
 <noscript>
   <link rel="stylesheet" href="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.css">
 </noscript>
 {% endhtml %}
+
 {% html "footer" %}
 <script src="https://cdn.maptiler.com/maptiler-sdk-js/latest/maptiler-sdk.umd.min.js" defer onload="drawMap()"></script>
 {% endhtml %}
@@ -18,44 +18,59 @@
     height: 25rem;
     border-radius: 0.5rem;
     background-color: var(--secondary);
-    {# position: relative; #}
   }
-  #map-style-switcher {
-    {# position: absolute;
-    top: 205px;
-    right: 10px;
-    z-index: 1; #}
-  }
-  .maplibregl-ctrl-icon {
-    background-size: 60%;
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    filter: invert(33%) sepia(480%) saturate(0%) hue-rotate(182deg) brightness(89%) contrast(85%);
+{% endcss %}
 
-    &.maplibregl-ctrl-outdoor {
-      background-image: url("/static/icon/ic_live_srtm@3x.png");
-    }
-    &.maplibregl-ctrl-topo {
-      background-image: url("/static/icon/map_action_trekking_dark@3x.png");
-      background-size: 80%;
-    }
-    &.maplibregl-ctrl-satellite {
-      background-image: url("/static/icon/map_world_globe_dark@3x.png");
-    }
-  }
+{% css "defer" %}
   .maplibregl-ctrl-bottom-left a[aria-label="Mapbox logo"] {
     display: none !important;
+  }
+
+  /*layerSwitcherControl*/
+  .maplibregl-ctrl-basemaps {
+    display: flex;
+    flex-direction: row;
+    pointer-events: auto;
+    position: relative;
+
+    &.reverse {
+      flex-direction: row-reverse;
+    }
+
+    &.column {
+      flex-direction: column;
+
+      &.reverse {
+        flex-direction: column-reverse;
+      }
+    }
+
+    & .basemap {
+      width: 32px;
+      height: 32px;
+      margin: 2px;
+      border: 2px solid #ccc;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+      cursor: pointer;
+
+      &.active {
+        border-color: orange;
+        box-shadow: 2px 2px 4px #000;
+      }
+    }
+    &.closed .basemap {
+      display: none;
+
+      &.active {
+        display: block;
+        border: 2px solid #ccc;
+      }
+    }
   }
 {% endcss %}
 </style>
 
-<div id="map-site">
-  <div id="map-style-switcher" class="maplibregl-ctrl maplibregl-ctrl-group" hidden>
-    <button id="style-outdoor" class="maplibregl-ctrl-icon maplibregl-ctrl-outdoor" title="Outdoor"></button>
-    <button id="style-topo" class="maplibregl-ctrl-icon maplibregl-ctrl-topo" title="Topo"></button>
-    <button id="style-hybrid" class="maplibregl-ctrl-icon maplibregl-ctrl-satellite" title="Satellite"></button>
-  </div>
-</div>
+<div id="map-site"></div>
 
 <script>
   {% js %}
@@ -69,17 +84,29 @@
     [...takeoffs, ...landings].map(location => bounds.extend(location));
 
     maptilersdk.config.apiKey = 'Rbbu3nsbqSZW7WjHyQEk';
+
+    const baseMaps = {
+      "OUTDOOR": {
+        img: "https://cloud.maptiler.com/static/img/maps/outdoor.png"
+      },
+      "TOPO": {
+        img: "https://cloud.maptiler.com/static/img/maps/topo.png"
+      },
+      "HYBRID": {
+        img: "https://cloud.maptiler.com/static/img/maps/hybrid.png"
+      }
+    };
+    const initialStyle = maptilersdk.MapStyle[Object.keys(baseMaps)[0]];
+
     const map = new maptilersdk.Map({
-      container: 'map-site', // container's id or the HTML element to render the map
-      style: "outdoor",
-      // style: 'bad49809-c61a-41fe-a212-9b1f58c1a8f8', // "topo" "topo-v2"
-      center: takeoffs[0], // starting position [lng, lat]
-      zoom: 13, // starting zoom
-      // maxZoom: 14,
+      container: 'map-site',
+      style: initialStyle, //'bad49809-c61a-41fe-a212-9b1f58c1a8f8' or "topo" or "topo-v2"
+      center: takeoffs[0],
+      zoom: 13,
       minZoom: 9,
-      bounds: bounds,
+      bounds: bounds, // resets zoom and center
       fitBoundsOptions: { padding: 40 },
-      geolocateControl: false, //disable the geolocate control
+      geolocateControl: false,
       fullscreenControl: true,
       scaleControl: "bottom-left",
       terrain: true,
@@ -96,6 +123,8 @@
     {#// FIXME: move attribution control to bottom left
       // https://github.com/maptiler/maplibre-gl-js-samples/blob/main/control-minimap/code.html
       map.addControl(new maptilersdk.AttributionControl({ compact: true}), 'bottom-left');
+      // TODO: enable/disable scroll when map is in Fullscreen mode
+      map.scrollZoom.enable();
     #}
 
     // Add the markers while setting the bounds
@@ -124,23 +153,67 @@
       marker.setPopup(popup);
     });
 
-    map.on('load', () => {
-      let mapSwitcher = document.getElementById('map-style-switcher');
-      // Add the style switcher listener
-      document.getElementsByClassName('maplibregl-ctrl-top-left')[0].appendChild(mapSwitcher);
-      let styles = ['outdoor', 'topo', 'hybrid'];
-      styles.map(style => {
-        document.getElementById('style-' + style).addEventListener('click', function() {
-          map.setStyle(style);
-          // Fixes "Unable to perform style diff [...]"
-          (style === 'hybrid') && map.hasTerrain() && map.enableTerrain();
-        });
-      });
+    // Create the layer switcher control
+    class layerSwitcherControl {
 
-      setTimeout(() => {
-        mapSwitcher.removeAttribute('hidden');
-      }, 100);
-    });
+      constructor(options) {
+        this._options = {...options};
+        this._container = document.createElement("div");
+        this._container.classList.add("maplibregl-ctrl");
+        this._container.classList.add("maplibregl-ctrl-basemaps");
+        this._container.classList.add("closed");
+        switch (this._options.expandDirection || "right") {
+          case "top":
+            this._container.classList.add("reverse");
+          case "down":
+            this._container.classList.add("column");
+            break;
+          case "left":
+            this._container.classList.add("reverse");
+          case "right":
+            this._container.classList.add("row");
+        }
+        this._container.addEventListener("mouseenter", () => {
+          this._container.classList.remove("closed");
+        });
+        this._container.addEventListener("mouseleave", () => {
+          this._container.classList.add("closed");
+        });
+      }
+
+      onAdd(map) {
+        this._map = map;
+        const basemaps = this._options.basemaps;
+        Object.keys(basemaps).forEach((layerId) => {
+          const base = basemaps[layerId];
+          const basemapContainer = document.createElement("img");
+          basemapContainer.src = base.img;
+          basemapContainer.classList.add("basemap");
+          basemapContainer.dataset.id = layerId;
+          basemapContainer.addEventListener("click", () => {
+            const activeElement = this._container.querySelector(".active");
+            activeElement.classList.remove("active");
+            basemapContainer.classList.add("active");
+            map.setStyle(maptilersdk.MapStyle[layerId]);
+            // Fixes "Unable to perform style diff [...]"
+            (layerId === 'HYBRID') && map.hasTerrain() && map.enableTerrain();
+          });
+          basemapContainer.classList.add("hidden");
+          this._container.appendChild(basemapContainer);
+          if (this._options.initialBasemap.id === layerId) {
+              basemapContainer.classList.add("active");
+          }
+        });
+        return this._container;
+      }
+
+      onRemove(){
+        this._container.parentNode?.removeChild(this._container);
+        delete this._map;
+      }
+    }
+
+    map.addControl(new layerSwitcherControl({basemaps: baseMaps, initialBasemap: initialStyle}), 'top-left');
   }
   {% endjs %}
 </script>
