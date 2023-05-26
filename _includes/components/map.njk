@@ -62,8 +62,11 @@
   const isTouchDevice = () => (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
   var drawMap = () => {
     // Parse the takeoffs from the json string and adjust the data
-    const takeoffs = {{ takeoffs | adjustCoordinates | safe }}
-    const landings = {{ landings | adjustCoordinates | safe }}
+    const takeoffs = {{ takeoffs | adjustCoordinates | safe }};
+    const landings = {{ landings | adjustCoordinates | safe }};
+    // Create initial bounds
+    const bounds = new maptilersdk.LngLatBounds();
+    [...takeoffs, ...landings].map(location => bounds.extend(location));
 
     maptilersdk.config.apiKey = 'Rbbu3nsbqSZW7WjHyQEk';
     const map = new maptilersdk.Map({
@@ -74,8 +77,9 @@
       zoom: 13, // starting zoom
       // maxZoom: 14,
       minZoom: 9,
+      bounds: bounds,
+      fitBoundsOptions: { padding: 40 },
       geolocateControl: false, //disable the geolocate control
-      attributionControl: false,
       fullscreenControl: true,
       scaleControl: "bottom-left",
       terrain: true,
@@ -84,6 +88,9 @@
       maxPitch: 70,
       scrollZoom: false,
       cooperativeGestures: isTouchDevice(),
+      maptilerLogo: false,
+      attributionControl: false,
+      crossSourceCollisions: false,
     });
 
     {#// FIXME: move attribution control to bottom left
@@ -92,9 +99,7 @@
     #}
 
     // Add the markers while setting the bounds
-    const bounds = new maptilersdk.LngLatBounds();
     let takeoffCounter = landingCounter = 0;
-
     [...takeoffs, ...landings].map((location, i) => {
       const isTakeoff = i < takeoffs.length;
       const markerColor = isTakeoff ? 'var(--blue)' : 'var(--green)';
@@ -110,10 +115,12 @@
       }
 
       const marker = new maptilersdk.Marker({ color: markerColor }).setLngLat(location).addTo(map);
-      bounds.extend(location);
 
       const popup = new maptilersdk.Popup({ closeButton: true })
-        .setHTML(`<h3>${markerType} ${num}</h3><p><a href="https://maps.google.com/maps?q=${location[1]},${location[0]}" target="_blank">Naviga qui</a></p>`);
+        .setHTML(`
+          <h3>${markerType} ${num}</h3>
+          <p><a href="https://maps.google.com/maps?q=${location[1]},${location[0]}" target="_blank">Naviga qui</a></p>
+        `);
       marker.setPopup(popup);
     });
 
@@ -124,12 +131,13 @@
       let styles = ['outdoor', 'topo', 'hybrid'];
       styles.map(style => {
         document.getElementById('style-' + style).addEventListener('click', function() {
-          map.setStyle('https://api.maptiler.com/maps/' + style + '/style.json?key=' + maptilersdk.config.apiKey);
+          map.setStyle(style);
+          // Fixes "Unable to perform style diff [...]"
+          (style === 'hybrid') && map.hasTerrain() && map.enableTerrain();
         });
       });
-      // Settimeout to fix the maptiler bug
+
       setTimeout(() => {
-        map.fitBounds(bounds, { padding: 40 });
         mapSwitcher.removeAttribute('hidden');
       }, 100);
     });
