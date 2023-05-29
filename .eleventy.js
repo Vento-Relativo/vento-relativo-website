@@ -4,6 +4,7 @@ const UglifyJS = require("uglify-js");
 const htmlmin = require("html-minifier");
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
+const Image = require("@11ty/eleventy-img");
 const postcss = require('postcss');
 const postcssNesting = require('postcss-nesting');
 const autoprefixer = require('autoprefixer');
@@ -116,6 +117,33 @@ module.exports = function (eleventyConfig) {
     return JSON.stringify(coordArray.map((to) => to.split(' ').join('') // remove spaces
       .split(',').reverse())) // flip the coordinates
   });
+
+  // eleventyConfig.addShortcode("image", async function(src, alt, sizes) {
+	// 	let metadata = await Image(src, {
+  //     urlPath: "/static/img/",
+  //     outputDir: "./_site/static/img/",
+  //     // svgShortCircuit: true,
+	// 		// widths: [300],
+	// 		formats: ["svg"]
+	// 	});
+	// 	let imageAttributes = {
+	// 		alt,
+	// 		sizes,
+	// 		loading: "lazy",
+	// 		decoding: "async",
+	// 	};
+	// 	// You bet we throw an error on a missing alt (alt="" works okay)
+	// 	return Image.generateHTML(metadata, imageAttributes);
+	// });
+
+  // Inline SVG shortcode: https://medium.com/@brettdewoody/inlining-svgs-in-eleventy-cffb1114e7b
+  eleventyConfig.addShortcode('svgInline', async (src, alt, sizes) => {
+    let metadata = await Image(src, {
+      formats: ['svg'],
+      dryRun: true,
+    })
+    return metadata.svg[0].buffer.toString()
+  })
 
   // Minify HTML output
   eleventyConfig.addTransform("htmlmin", function (content, outputPath) {

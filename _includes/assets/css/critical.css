@@ -138,6 +138,12 @@ pre {
   margin: 0.5em 0;
 }
 
+/* Logo bigger on HP */
+html:not([data-current='home']) #logo > svg {
+  width: 260px;
+  height: auto;
+}
+
 header {
   /* Header Logo (style as h2) */
   > em {

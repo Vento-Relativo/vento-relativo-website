@@ -14,13 +14,7 @@
 				{% include "components/canvas.njk" %}
 			{% endif %}
 			<a id="logo" href="{{ '/' | url }}" title="{{ metadata.title }}">
-				<img src="/static/img/logo.png" alt="{{ metadata.title }} logo"
-					{% if home %}
-						width="736" height="296"
-					{% else %}
-						width="264" height="106"
-					{% endif %}
-				/>
+				{% svgInline "static/img/logo.svg", "Logo VentoRelativo" %}
 			</a>
 			{% include "components/nav.njk" %}
 		</header>
