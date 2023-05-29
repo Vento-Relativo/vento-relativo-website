@@ -5,6 +5,7 @@ const htmlmin = require("html-minifier");
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
 const Image = require("@11ty/eleventy-img");
+const externalLinks = require('eleventy-plugin-external-links');
 const postcss = require('postcss');
 const postcssNesting = require('postcss-nesting');
 const autoprefixer = require('autoprefixer');
@@ -187,6 +188,8 @@ module.exports = function (eleventyConfig) {
     .use(markdownItAnchor, opts)
     // .use(markdownItGHeadings)
   );
+
+  eleventyConfig.addPlugin(externalLinks);
 
   return {
     templateFormats: [ "md", "njk", "liquid" ],
