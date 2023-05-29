@@ -3,9 +3,9 @@ layout: layouts/home.njk
 title: VentoRelativo Parapendio Club
 date: 2023-05-20T19:53:07.109Z
 permalink: /
-eleventyNavigation:
-  key: Home
-  order: 0
+# eleventyNavigation:
+#   key: Home
+#   order: 0
 ---
 # Vento Relativo
 
@@ -16,3 +16,16 @@ Includes [Netlify CMS](https://www.netlifycms.org) for WYSIWYG content editing, 
 [Log in to the Netlify CMS dashboard](/admin/)
 
 <a class="button" href="https://www.google.com">Button</a>
+
+
+<section class="full-width bg-red section-satispay">
+<h2>Vuoi  aiutarci?</h2>
+<h3>Puoi fare la tessera come SOCIO SOSTENITORE</h3>
+
+Tramite Satispay il versamento è facile:
+<a class="button" href="https://tag.satispay.com/dk_txOSIuSjguNLePMkOAjl">Paga su Satispay</a>
+
+
+**Associazione Sportiva Vento Relativo IBAN**:
+IT67W0326830750052117945240
+</section>

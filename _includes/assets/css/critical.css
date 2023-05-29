@@ -97,6 +97,16 @@ main {
     }
   }
 
+  & > .full-width {
+    display: inherit;
+    grid-template-columns: inherit;
+    padding-block: 1rem;
+
+    & > * {
+      grid-column: main;
+    }
+  }
+
   @media (min-width: 60rem) {
     & > figure {
       align-items: end;
@@ -166,8 +176,10 @@ header {
         padding: 0.25em 0.5em;
         border-radius: 0.25em;
 
-        &[href]:not(:hover) {
+        /* &[href]:not(:hover) {*/
+        &:hover {
           text-decoration: none;
+          outline: solid 2px var(--secondary);
         }
 
         &[data-current='current item'] {
@@ -292,4 +304,16 @@ textarea {
 
 :is(h2, h3, h4, h5, h6):hover .header-anchor > svg {
   visibility: visible;
+}
+
+/* testing */
+.bg-red {
+  background-color: tomato;
+  color: white;
+}
+
+.full-width {
+  &.align-center {
+    text-align: center;
+  }
 }
