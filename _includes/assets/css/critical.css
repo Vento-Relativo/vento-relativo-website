@@ -4,10 +4,9 @@
   --background: #fff;
   /* palette */
   --red: tomato;
-  --orange: #FF7F50;
-  --green: #3CB371;
+  --orange: #ff7f50;
+  --green: #3cb371;
   --blue: dodgerblue;
-
   --font-stack-base: 'Avenir', 'Avenir Next', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Helvetica, Arial, sans-serif;
 }
@@ -30,11 +29,6 @@ body {
   height: 100vh;
   grid-template-rows: auto 1fr auto;
   background-color: var(--background);
-}
-
-main {
-  /* was 37.5em; */
-  max-width: 60rem;
 }
 
 p,
@@ -60,23 +54,68 @@ img {
 }
 
 header,
-main,
-footer {
-  padding: 1em;
-}
-
-header,
 footer {
   text-align: center;
+  padding-block: 1rem;
 }
 
 footer {
   background-color: var(--secondary);
 }
 
+/* CSS Grid "Break out" layout
+ - https://css-tricks.com/full-width-elements-by-using-edge-to-edge-grid/
+ - https://cloudfour.com/thinks/breaking-out-with-css-grid-layout/
+ */
+header,
+footer,
+main {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(1em, 1fr)
+    [main-start] minmax(0, 60rem)
+    [main-end] minmax(1em, 1fr)
+    [full-end];
+  grid-auto-rows: minmax(min-content, max-content);
+
+  & > * {
+    grid-column: main;
+  }
+
+  & > .full-width {
+    grid-column: full;
+  }
+}
+
+main {
+  & > figure {
+    grid-column: full;
+
+    & > img {
+      display: block;
+    }
+  }
+
+  @media (min-width: 60rem) {
+    & > figure {
+      align-items: end;
+      display: inherit;
+      grid-template-columns: inherit;
+
+      & > img {
+        grid-column: main / full;
+      }
+
+      & > figcaption {
+        order: -1;
+        text-align: right;
+      }
+    }
+  }
+}
+
 main {
   padding-bottom: 2em;
-  margin-inline: auto;
 
   :first-child,
   > article :first-child {
@@ -207,7 +246,7 @@ textarea {
   border: 1px solid black;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 60rem) {
   :root {
     font-size: 1.1rem;
   }
