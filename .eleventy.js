@@ -172,7 +172,8 @@ module.exports = function (eleventyConfig) {
   let options = {
     html: true,  // Enable HTML tags in source
     breaks: true, // Convert line breaks into <br>
-    linkify: true // Autoconvert URLs to links
+    linkify: true, // Autoconvert URLs to links
+    typographer: true, // Enable some language-neutral replacement + quotes beautification
   };
   let opts = {
     // permalink: true,
