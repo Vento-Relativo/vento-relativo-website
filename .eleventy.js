@@ -7,6 +7,9 @@ const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
 const Image = require("@11ty/eleventy-img");
 const externalLinks = require('eleventy-plugin-external-links');
 const pluginTOC = require('eleventy-plugin-nesting-toc');
+const markdownIt = require("markdown-it");
+const markdownItAnchor = require("markdown-it-anchor");
+const markdownItAttrs = require("markdown-it-attrs");
 const postcss = require('postcss');
 const postcssNesting = require('postcss-nesting');
 const autoprefixer = require('autoprefixer');
@@ -49,6 +52,9 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginTOC, {
     ignoredElements: ['.header-anchor'],
   });
+
+  // Eleventy Plugin External Links
+  eleventyConfig.addPlugin(externalLinks);
 
   // Configuration API: use eleventyConfig.addLayoutAlias(from, to) to add
   // layout aliases! Say you have a bunch of existing content using
@@ -174,16 +180,13 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("_includes/assets/css/critical.css");
 
   /* Markdown Plugins */
-  let markdownIt = require("markdown-it");
-  let markdownItAnchor = require("markdown-it-anchor");
-  let options = {
+  const mdiOpts = {
     html: true,  // Enable HTML tags in source
     breaks: true, // Convert line breaks into <br>
     linkify: true, // Autoconvert URLs to links
     typographer: true, // Enable some language-neutral replacement + quotes beautification
   };
-  let opts = {
-    // permalink: true,
+  const mdiaOpts = {
     permalink: markdownItAnchor.permalink.linkInsideHeader({
       symbol: `
         <span class="visually-hidden">Jump to heading</span>
@@ -191,13 +194,10 @@ module.exports = function (eleventyConfig) {
       `,
     })
   };
-
-  eleventyConfig.setLibrary("md", markdownIt(options)
-    .use(markdownItAnchor, opts)
-    // .use(markdownItGHeadings)
+  eleventyConfig.setLibrary("md", markdownIt(mdiOpts)
+    .use(markdownItAnchor, mdiaOpts)
+    .use(markdownItAttrs)
   );
-
-  eleventyConfig.addPlugin(externalLinks);
 
   return {
     templateFormats: [ "md", "njk", "liquid" ],
