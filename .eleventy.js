@@ -7,6 +7,7 @@ const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
 const Image = require("@11ty/eleventy-img");
 const externalLinks = require('eleventy-plugin-external-links');
 const pluginTOC = require('eleventy-plugin-nesting-toc');
+const embedEverything = require("eleventy-plugin-embed-everything");
 const markdownIt = require("markdown-it");
 const markdownItAnchor = require("markdown-it-anchor");
 const markdownItAttrs = require("markdown-it-attrs");
@@ -50,11 +51,14 @@ module.exports = function (eleventyConfig) {
 
   // Eleventy Plugin Nesting TOC
   eleventyConfig.addPlugin(pluginTOC, {
-    ignoredElements: ['.header-anchor'],
+    ignoredElements: [ '.header-anchor' ],
   });
 
   // Eleventy Plugin External Links
   eleventyConfig.addPlugin(externalLinks);
+
+  // Eleventy Plugin Embed Everything https://gfscott.com/embed-everything/
+  eleventyConfig.addPlugin(embedEverything);
 
   // Configuration API: use eleventyConfig.addLayoutAlias(from, to) to add
   // layout aliases! Say you have a bunch of existing content using
@@ -132,31 +136,13 @@ module.exports = function (eleventyConfig) {
       .split(',').reverse())) // flip the coordinates
   });
 
-  // eleventyConfig.addShortcode("image", async function(src, alt, sizes) {
-	// 	let metadata = await Image(src, {
-  //     urlPath: "/static/img/",
-  //     outputDir: "./_site/static/img/",
-  //     // svgShortCircuit: true,
-	// 		// widths: [300],
-	// 		formats: ["svg"]
-	// 	});
-	// 	let imageAttributes = {
-	// 		alt,
-	// 		sizes,
-	// 		loading: "lazy",
-	// 		decoding: "async",
-	// 	};
-	// 	// You bet we throw an error on a missing alt (alt="" works okay)
-	// 	return Image.generateHTML(metadata, imageAttributes);
-	// });
-
   // Inline SVG shortcode: https://medium.com/@brettdewoody/inlining-svgs-in-eleventy-cffb1114e7b
   eleventyConfig.addShortcode('svgInline', async (src, alt, sizes) => {
     let metadata = await Image(src, {
-      formats: ['svg'],
+      formats: [ 'svg' ],
       dryRun: true,
     })
-    return metadata.svg[0].buffer.toString()
+    return metadata.svg[ 0 ].buffer.toString()
   })
 
   // Minify HTML output
