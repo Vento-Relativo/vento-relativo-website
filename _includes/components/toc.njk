@@ -1,0 +1,6 @@
+{% if layoutContent | toc %}
+  <details>
+    <summary>Sommario</summary>
+    {{ layoutContent | toc | safe }}
+  </details>
+{% endif %}

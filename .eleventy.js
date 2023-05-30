@@ -6,6 +6,7 @@ const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
 const bundlerPlugin = require("@11ty/eleventy-plugin-bundle");
 const Image = require("@11ty/eleventy-img");
 const externalLinks = require('eleventy-plugin-external-links');
+const pluginTOC = require('eleventy-plugin-nesting-toc');
 const postcss = require('postcss');
 const postcssNesting = require('postcss-nesting');
 const autoprefixer = require('autoprefixer');
@@ -16,6 +17,7 @@ module.exports = function (eleventyConfig) {
   // Eleventy Navigation https://www.11ty.dev/docs/plugins/navigation/
   eleventyConfig.addPlugin(eleventyNavigationPlugin);
 
+  // Eleventy Plugin Bundle https://github.com/11ty/eleventy-plugin-bundle
   eleventyConfig.addPlugin(bundlerPlugin, {
     transforms: [
       async function (code) {
@@ -41,6 +43,11 @@ module.exports = function (eleventyConfig) {
         return code;
       }
     ]
+  });
+
+  // Eleventy Plugin Nesting TOC
+  eleventyConfig.addPlugin(pluginTOC, {
+    ignoredElements: ['.header-anchor'],
   });
 
   // Configuration API: use eleventyConfig.addLayoutAlias(from, to) to add

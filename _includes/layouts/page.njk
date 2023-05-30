@@ -4,4 +4,6 @@ section: page
 ---
 <h1>{{ title }}</h1>
 
+{% include "components/toc.njk" %}
+
 {{ layoutContent | safe }}
