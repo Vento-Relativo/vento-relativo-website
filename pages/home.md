@@ -20,8 +20,47 @@ Includes [Netlify CMS](https://www.netlifycms.org) for WYSIWYG content editing, 
 <h3>Puoi fare la tessera come SOCIO SOSTENITORE</h3>
 
 Tramite Satispay il versamento è facile:
-[Paga con Satispay](https://tag.satispay.com/dk_txOSIuSjguNLePMkOAjl){.button}
+[Paga con Satispay](https://tag.satispay.com/dk_txOSIuSjguNLePMkOAjl?amount=1000&currency=EUR){.button}
 
 **Associazione Sportiva Vento Relativo IBAN**:
 IT67W0326830750052117945240
+</section>
+
+
+<section class="full-width bg-grey">
+<div class="pricing">
+
+  <div class="pricing-card">
+    <h2>Socio Sostenitore</h2>
+    <div class="pricing-card__body">
+      <h3>10€</h3>
+      <p>Lorem ipsum dolor sit amet</p>
+      <ul>
+        <li>some stuff</li>
+        <li>more stuff</li>
+      </ul>
+      <p>
+        <a href="https://tag.satispay.com/dk_txOSIuSjguNLePMkOAjl?amount=1000&amp;currency=EUR" class="button" target="_blank" rel="noopener">Paga con Satispay</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="pricing-card pricing-card--highlight">
+    <h2>Socio Sostenitore</h2>
+    <div class="pricing-card__body">
+      <h3>30€</h3>
+      <p>Lorem ipsum dolor sit amet</p>
+      <ul>
+        <li>some stuff</li>
+        <li>more stuff</li>
+        <li>more stuff</li>
+        <li>more stuff</li>
+      </ul>
+      <p>
+        <a href="https://tag.satispay.com/dk_txOSIuSjguNLePMkOAjl?amount=1000&amp;currency=EUR" class="button" target="_blank" rel="noopener">Paga con Satispay</a>
+      </p>
+    </div>
+  </div>
+
+</div>
 </section>

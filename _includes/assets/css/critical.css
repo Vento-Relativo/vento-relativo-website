@@ -319,3 +319,45 @@ textarea {
     text-align: center;
   }
 }
+
+
+.pricing {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.pricing-card {
+  border: 1px solid var(--secondary);
+  border-radius: 10px;
+  text-align: center;
+
+  & > h2 {
+    background-color: var(--secondary);
+    padding: 1rem;
+    margin: 0;
+    font-size: 1.17rem;
+  }
+
+  &.pricing-card--highlight {
+    border: 1px solid var(--primary);
+    & > h2 {
+      background-color: var(--primary);
+      color: white;
+    }
+  }
+
+  .pricing-card__body {
+    padding: 1rem;
+
+    & > h3 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    & ul {
+      list-style: none;
+      padding: 0;
+    }
+  }
+}
