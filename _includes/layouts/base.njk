@@ -25,6 +25,7 @@
 
 		{% include "components/footer.njk" %}
 
+		{% include "components/back-to-top.njk" %}
 		<div hidden>
 			{# https://github.com/11ty/eleventy-plugin-bundle#svg-icon-library #}
 			<svg width="0" height="0" aria-hidden="true" style="position: absolute;">
@@ -40,6 +41,9 @@
 			{% endhtml %}
 
 			{% getBundle "html", "footer" %}
+			<script>
+				{% getBundle "js", "footer" %}
+			</script>
 		</div>
 
 

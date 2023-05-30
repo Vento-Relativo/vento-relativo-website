@@ -1,0 +1,65 @@
+<div>
+  <style>
+  {% css %}
+    .arrow {
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+    }
+    .up {
+      transform: rotate(-135deg) translate(-15%, -15%);
+    }
+    #backToTop {
+      position: fixed;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: none;
+      background-color: var(--primary);
+      right: 2rem;
+      bottom: 2rem;
+      color: white;
+      cursor: pointer;
+      transition-duration: 500ms;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #backToTopObserved {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      top: 25rem;
+      right: 0;
+      visibility: hidden;
+    }
+  {% endcss %}
+  </style>
+
+  <div id="backToTopObserved"></div>
+  <button id="backToTop" aria-label="go to top">
+    <i class="arrow up"></i>
+  </button>
+
+  <script>
+  {% js "footer" %}
+    const observer = new IntersectionObserver(items => {
+      items.forEach(({isIntersecting}) => {
+        if (isIntersecting) {
+          backToTop.style.opacity = 0;
+          backToTop.style.pointerEvents = 'none';
+        } else {
+          backToTop.style.opacity = 1;
+          backToTop.style.pointerEvents = 'auto';
+        }
+      })
+    })
+    observer.observe(document.querySelector("#backToTopObserved"))
+
+    backToTop.addEventListener('click', () => {
+      let start = document.querySelector('body')
+      start.scrollIntoView({behavior: "smooth"})
+    })
+  {% endjs %}
+  </script>
+</div>
